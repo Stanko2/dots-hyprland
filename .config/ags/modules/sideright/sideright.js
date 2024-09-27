@@ -13,7 +13,9 @@ import {
     ModuleSettingsIcon,
     ModulePowerIcon,
     ModuleRawInput,
-    ModuleCloudflareWarp
+    ModuleCloudflareWarp,
+    ModulePowerProfiles,
+    ModuleNwgDisplays
 } from "./quicktoggles.js";
 import ModuleNotificationList from "./centermodules/notificationlist.js";
 import ModuleAudioControls from "./centermodules/audiocontrols.js";
@@ -109,6 +111,7 @@ const timeRow = Box({
             },
         }),
         Widget.Box({ hexpand: true }),
+        ModuleNwgDisplays({ hpack: 'end' }),
         ModuleReloadIcon({ hpack: 'end' }),
         // ModuleSettingsIcon({ hpack: 'end' }), // Button does work, gnome-control-center is kinda broken
         ModulePowerIcon({ hpack: 'end' }),
@@ -122,11 +125,12 @@ const togglesBox = Widget.Box({
         ToggleIconWifi(),
         ToggleIconBluetooth(),
         // await ModuleRawInput(),
-        // await HyprToggleIcon('touchpad_mouse', 'No touchpad while typing', 'input:touchpad:disable_while_typing', {}),
+        await HyprToggleIcon('touchpad_mouse', 'No touchpad while typing', 'input:touchpad:disable_while_typing', {}),
         await ModuleNightLight(),
         await ModuleInvertColors(),
         ModuleIdleInhibitor(),
         await ModuleCloudflareWarp(),
+        await ModulePowerProfiles()
     ]
 })
 

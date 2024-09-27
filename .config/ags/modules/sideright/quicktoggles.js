@@ -5,6 +5,7 @@ import * as Utils from 'resource:///com/github/Aylur/ags/utils.js';
 
 import Bluetooth from 'resource:///com/github/Aylur/ags/service/bluetooth.js';
 import Network from 'resource:///com/github/Aylur/ags/service/network.js';
+import PowerProfiles from 'resource:///com/github/Aylur/ags/service/powerprofiles.js';
 const { execAsync, exec } = Utils;
 import { BluetoothIndicator, NetworkIndicator } from '../.commonwidgets/statusicons.js';
 import { setupCursorHover } from '../.widgetutils/cursorhover.js';
@@ -238,6 +239,20 @@ export const ModuleReloadIcon = (props = {}) => Widget.Button({
     }
 })
 
+export const ModuleNwgDisplays = (props = {}) => Widget.Button({
+  ...props,
+  className: 'txt-small sidebar-iconbutton',
+  tooltipText: 'Show display configuration',
+  onClicked: () => {
+    execAsync(['bash', '-c', 'pkill nwg-displays || nwg-displays']);
+    App.closeWindow('sideright');
+  },
+  child: MaterialIcon('monitor', 'norm'),
+  setup: button => {
+    setupCursorHover(button);
+  }
+})
+
 export const ModuleSettingsIcon = (props = {}) => Widget.Button({
     ...props,
     className: 'txt-small sidebar-iconbutton',
@@ -265,3 +280,34 @@ export const ModulePowerIcon = (props = {}) => Widget.Button({
         setupCursorHover(button);
     }
 })
+
+export const ModulePowerProfiles = (props = {}) => Widget.Button({
+  className: 'txt-small sidebar-iconbutton',
+  tooltipText: 'Switch power profiles',
+  onClicked: (self) => {
+    execAsync(['asusctl', 'profile', '-n']).catch(print);
+    // self.child = PowerProfileIndicator()
+  },
+  child: MaterialIcon(PowerProfileIndicator(), 'norm'),
+  setup: (self) => {
+    setupCursorHover(self);
+    self.hook(PowerProfiles, button => {
+      button.toggleClassName('sidebar-button-active', PowerProfiles.active_profile != 'balanced')
+      button.tooltipText = (PowerProfiles.active_profile);
+      // console.log(JSON.stringify(button.child))
+      button.child.label = PowerProfileIndicator()
+    });
+  },
+  ...props,
+})
+
+function PowerProfileIndicator() {
+  const profile = PowerProfiles.active_profile
+  if (profile == 'power-saver') {
+    return 'eco'
+  } else if (profile == 'balanced') {
+    return 'balance'
+  } else if (profile == 'performance') {
+    return 'bolt'
+  }
+}
