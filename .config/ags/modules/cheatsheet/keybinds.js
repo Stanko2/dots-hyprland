@@ -18,6 +18,7 @@ const getKeybindList = () => {
         ]).catch(print))
         return { children: [] };
     }
+    console.log(data);
     return JSON.parse(data);
 };
 const keybindList = getKeybindList();
